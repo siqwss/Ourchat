@@ -166,6 +166,9 @@
   measurementId: "G-FELTZSYFR0"
 };
 
+firebase.initializeApp(firebaseConfig);  
+const db = firebase.database(); // 💖 This line makes it work!
+
   let currentUser = "";
 
   function loginAs(name) {
@@ -199,4 +202,3 @@
 
 </body>
 </html>
-
