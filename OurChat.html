@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Bryceee 💕 & Gazieee ❤️</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Comic Sans MS', cursive; }
+
+    body {
+      background: linear-gradient(to bottom, #ffe6f0, #fff0f5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-screen, .chat-box {
+      width: 360px;
+      height: 600px;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .login-screen {
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      gap: 20px;
+    }
+
+    .login-screen h2 {
+      font-size: 22px;
+      color: #ff69b4;
+      text-align: center;
+    }
+
+    .login-screen button {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 80%;
+    }
+
+    .bryce-btn {
+      background-color: #ffb6c1;
+      color: white;
+    }
+
+    .gazie-btn {
+      background-color: #add8e6;
+      color: white;
+    }
+
+    .chat-box {
+      display: none;
+    }
+
+    .header {
+      background: #ffb6c1;
+      padding: 15px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .from-me {
+      align-self: flex-end;
+      background: #ffe4e1;
+      border-bottom-right-radius: 4px;
+    }
+
+    .from-him {
+      align-self: flex-start;
+      background: #e0f7fa;
+      border-bottom-left-radius: 4px;
+    }
+
+    .input-box {
+      display: flex;
+      padding: 10px;
+      background: #fff0f5;
+    }
+
+    .input-box input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+    }
+
+    .input-box button {
+      background-color: #ffb6c1;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      margin-left: 8px;
+      cursor: pointer;
+    }
+
+    .input-box button:hover {
+      background-color: #ff9cb0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Login Screen -->
+<div class="login-screen" id="loginScreen">
+  <h2>Who are you? 💖</h2>
+  <button class="bryce-btn" onclick="loginAs('Bryceee 💕')">💖 I'm Bryceee</button>
+  <button class="gazie-btn" onclick="loginAs('Gazieee ❤️')">❤️ I'm Gazieee</button>
+</div>
+
+<!-- Chat Box -->
+<div class="chat-box" id="chatBox">
+  <div class="header">Bryceee 💕 & Gazieee ❤️</div>
+  <div class="messages" id="messages"></div>
+  <div class="input-box">
+    <input type="text" id="messageInput" placeholder="Type something cute..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+  // 🔐 PASTE YOUR FIREBASE CONFIG HERE:
+  const firebaseConfig = {
+  apiKey: "AIzaSyAdVgW8Mvcc9IY2LTsLj-x82F8IsPuWhF4",
+  authDomain: "ourchat-bcb9a.firebaseapp.com",
+  databaseURL: "https://ourchat-bcb9a-default-rtdb.firebaseio.com",
+  projectId: "ourchat-bcb9a",
+  storageBucket: "ourchat-bcb9a.firebasestorage.app",
+  messagingSenderId: "390974901608",
+  appId: "1:390974901608:web:f019cfc822693d0d9a1add",
+  measurementId: "G-FELTZSYFR0"
+};
+
+  let currentUser = "";
+
+  function loginAs(name) {
+    currentUser = name;
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("chatBox").style.display = "flex";
+  }
+
+  function sendMessage() {
+    const text = document.getElementById("messageInput").value.trim();
+    if (text === "") return;
+    db.ref("messages").push({
+      name: currentUser,
+      text: text,
+      time: Date.now()
+    });
+    document.getElementById("messageInput").value = "";
+  }
+
+  const msgContainer = document.getElementById("messages");
+
+  db.ref("messages").on("child_added", function(snapshot) {
+    const msg = snapshot.val();
+    const div = document.createElement("div");
+    div.className = "message " + (msg.name === currentUser ? "from-me" : "from-him");
+    div.textContent = msg.text;
+    msgContainer.appendChild(div);
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+  });
+</script>
+
+</body>
+</html>
+
